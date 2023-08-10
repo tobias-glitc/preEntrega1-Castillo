@@ -1,41 +1,43 @@
-function saveData() {
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const age= document.getElementById("age").value;
+const productsData = [
+  { id: 1, name: 'Producto 1', price: 10 },
+  { id: 2, name: 'Producto 2', price: 20 },
+  { id: 3, name: 'Producto 3', price: 15 },
+];
 
-  const data = {
-      nombre: name,
-      email: email,
-      años: age
-  };
+const productsContainer = document.getElementById('products');
+const cartItemsContainer = document.getElementById('cart-items');
 
-  localStorage.setItem("userData", JSON.stringify(data));
-  alert("Datos guardados correctamente.");
-}
+// Mostrar productos en la tienda
+productsData.forEach(product => {
+  const productElement = document.createElement('div');
+  productElement.className = 'product';
+  productElement.innerHTML = `
+      <span>${product.name} - $${product.price}</span>
+      <button class="add-to-cart" data-id="${product.id}">Agregar al Carrito</button>
+  `;
+  productsContainer.appendChild(productElement);
+});
 
-function loadData() {
-  const data = localStorage.getItem("userData");
-  if (data) {
-      const parsedData = JSON.parse(data);
-      document.getElementById("name").value = parsedData.nombre;
-      document.getElementById("email").value = parsedData.email;
-      document.getElementById("age").value = parsedData.años;
-      alert("Datos cargados correctamente.");
-  } else {
-      alert("No hay datos guardados.");
+// Manejar clic en "Agregar al Carrito"
+productsContainer.addEventListener('click', event => {
+  if (event.target.classList.contains('add-to-cart')) {
+      const productId = parseInt(event.target.getAttribute('data-id'));
+      const selectedProduct = productsData.find(product => product.id === productId);
+      if (selectedProduct) {
+          addToCart(selectedProduct);
+      }
   }
+});
+
+// Agregar producto al carrito
+function addToCart(product) {
+  const cartItemElement = document.createElement('li');
+  cartItemElement.className = 'cart-item';
+  cartItemElement.innerHTML = `
+      <span>${product.name}</span>
+      <span>$${product.price}</span>
+  `;
+  cartItemsContainer.appendChild(cartItemElement);
 }
 
-// Algoritmo para sumar los números del 1 al 10 utilizando un ciclo for
-function sumNumbers() {
-  let sum = 0;
 
-  for (let i = 1; i <= 10; i++) {
-      sum += i;
-  }
-
-  return sum;
-}
-
-const result = sumNumbers();
-alert("La suma de los números del 1 al 10 es:", result);
