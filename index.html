@@ -1,23 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stilo.css">
-    <title>Online Store Simulator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Store Simulator</title>
+<style>
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+</style>
 </head>
 <body>
-    <h1>Tienda web</h1>
-    <div id="products">
-       
-    </div>
-    <div id="products">
-    <div id="cart">
-        <h2>Carrito de Compras</h2>
-        <ul id="cart-items">
-            <!-- Aquí se mostrarán los productos en el carrito -->
-        </ul>
-    </div>
-    <script src="main.js"></script>
+<h1>Store simulation</h1>
+<h2>Available Products:</h2>
+<ul id="productList"></ul>
+<h2>Your Cart:</h2>
+<ul id="cartList"></ul>
+<p>Total: $<span id="total">0</span></p>
+<button id="checkoutBtn">Checkout</button>
+
+<script>
+  const products = [
+    { id: 1, name: 'Product 1', price: 10 },
+    { id: 2, name: 'Product 2', price: 20 },
+    { id: 3, name: 'Product 3', price: 30 }
+  ];
+
+  let cart = [];
+
+  const productList = document.getElementById('productList');
+  const cartList = document.getElementById('cartList');
+  const totalSpan = document.getElementById('total');
+  const checkoutBtn = document.getElementById('checkoutBtn');
+
+  function updateProductList() {
+    productList.innerHTML = '';
+    products.forEach(product => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        ${product.name} - $${product.price}
+        <button class="add-to-cart-btn" data-id="${product.id}">Add to Cart</button>
+      `;
+      li.querySelector('.add-to-cart-btn').addEventListener('click', () => addToCart(product.id));
+      productList.appendChild(li);
+    });
+  }
+
+  function updateCartList() {
+    cartList.innerHTML = '';
+    cart.forEach(cartItem => {
+      const product = products.find(product => product.id === cartItem.id);
+      const li = document.createElement('li');
+      li.textContent = `${product.name} - $${product.price}`;
+      cartList.appendChild(li);
+    });
+    updateTotal();
+  }
+
+  function addToCart(productId) {
+    const existingCartItem = cart.find(item => item.id === productId);
+    if (!existingCartItem) {
+      cart.push({ id: productId });
+      updateCartList();
+    }
+  }
+
+  function updateTotal() {
+    const totalPrice = cart.reduce((total, cartItem) => {
+      const product = products.find(product => product.id === cartItem.id);
+      return total + product.price;
+    }, 0);
+    totalSpan.textContent = totalPrice;
+  }
+
+  checkoutBtn.addEventListener('click', () => {
+    alert(`Thank you for your purchase! Total: $${totalSpan.textContent}`);
+    cart = [];
+    updateCartList();
+  });
+
+  // Initial update of the product list
+  updateProductList();
+</script>
 </body>
 </html>
